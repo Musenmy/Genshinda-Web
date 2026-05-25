@@ -1,3 +1,6 @@
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => document.querySelectorAll(s);
+
 let typingText;
 let currentTarget;
 let correctCount = 0;
@@ -12,13 +15,13 @@ let timerInterval;
 let loadNextWordTimeout;
 let usedIndexes = [];
 const body = document.body;
-const choices = document.querySelectorAll(".choice");
-const display = document.getElementById("display");
-const timeDiv = document.getElementById("timeDiv");
-const timeDisplay = document.getElementById("timeDisplay");
-const timeBar = document.getElementById("timeBar");
-const cover = document.getElementById("cover");
-const startButton = document.getElementById("startButton");
+const choices = $$(".choice");
+const display = $("#display");
+const timeDiv = $("#timeDiv");
+const timeDisplay = $("#timeDisplay");
+const timeBar = $("#timeBar");
+const cover = $("#cover");
+const startButton = $("#startButton");
 let reducedTargetStrings = [];
 let gameMode = null;
 let currentIndexForSortedMode = 0;
@@ -46,9 +49,11 @@ function setupNewTarget() {
 
 function updateDisplay() {
     display.innerHTML = `
+<div class="typingInstructions">
   <div class="plain-text">${currentTarget.plain}</div>
   <div class="parsed-text"><span class="correct">${typingText.completedText}</span><span>${typingText.remainingText}</span></div>
-  <div class="roman-text"><span class="correct">${typingText.completedRoman}</span><span>${typingText.remainingRoman}</span></div>`;
+  <div class="roman-text"><span class="correct">${typingText.completedRoman}</span><span>${typingText.remainingRoman}</span></div>
+</div>`;
 }
 
 function startGame() {
@@ -132,6 +137,12 @@ function endGame() {
 <p>正しいタイプ数: ${correctCount}回</p>
 <p>ミスタイプ数: ${mistypeCount}回</p>
 <p>平均タイピング速度: ${speed} 回/秒</p>`;
+    }
+    // Hide any visible cover (e.g. the "n語目" overlay) so results are visible
+    if (cover) {
+        cover.style.display = "none";
+        cover.classList.remove("fade-in", "fade-out");
+        cover.innerHTML = "";
     }
     startButton.style.display = "inline-block";
     choices.forEach((e) => (e.style.display = "flex"));
