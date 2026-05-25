@@ -1,0 +1,376 @@
+* {
+    font-family: "DIN 2014", "Noto Sans", sans-serif;
+    text-align: center;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    padding-top: 8rem;
+}
+
+@keyframes flashRed {
+    0% {
+        color: red;
+    }
+    100% {
+        color: initial;
+    }
+}
+
+.flashRedEffect {
+    animation: flashRed 0.1s forwards;
+}
+
+h1 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    width: 100%;
+    height: 6rem;
+    padding-top: 0.8em;
+    background-color: lightgreen;
+    z-index: 1000;
+}
+#cover {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    font-size: 8rem;
+    z-index: 999;
+    display: none;
+    background-color: whitesmoke;
+}
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    60% {
+        opacity: 1;
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.25s forwards;
+}
+
+@keyframes fadeOut {
+    40% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+.fade-out {
+    animation: fadeOut 0.25s forwards;
+}
+
+#display {
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+}
+
+#timeDiv {
+    display: none;
+    margin-top: 1rem;
+    align-items: center;
+    justify-content: center;
+}
+#timeBar {
+    height: 1.5rem;
+    width: 80%;
+    max-width: 600px;
+    margin-right: 1em;
+}
+progress {
+    border-radius: 0;
+    -webkit-appearance: none;
+    background-color: #ddd;
+}
+::-webkit-progress-bar {
+    background-color: #ddd;
+}
+::-webkit-progress-value {
+    background-color: #1e90ff;
+}
+
+#startButton {
+    font-size: 1.2rem;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.plain-text {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.parsed-text {
+    font-size: 1.5rem;
+    color: gray;
+}
+
+.roman-text {
+    font-size: 1.5rem;
+}
+
+.parsed-text .correct {
+    color: limegreen;
+}
+
+.roman-text .correct {
+    color: green;
+    font-weight: bold;
+}
+
+.choice {
+    width: 90%;
+    max-width: 800px;
+    margin: 1rem auto;
+    display: flex;
+    border: 1px solid black;
+}
+
+div {
+    position: relative;
+    flex: 1;
+}
+
+input {
+    width: 100%;
+    height: 60px;
+    opacity: 0;
+}
+
+label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.choice label {
+    font-weight: bold;
+}
+.choice div:nth-child(1) input:checked + label {
+    background-color: #66dd11;
+}
+
+.choice div:nth-child(2) input:checked + label {
+    background-color: #33bbed;
+    color: white;
+}
+.choice div:nth-child(3) input:checked + label {
+    background-color: #ffaa01;
+}
+.choice div:nth-child(4) input:checked + label {
+    background-color: #ed4566;
+    color: white;
+}
+.choice div:nth-child(n + 5) input:checked + label {
+    background-color: #bb33ef;
+    color: white;
+}
+@font-face {
+    font-family: "DIN";
+    src: url("https://cdn.glitch.global/7c885749-6f02-4c58-aa84-9f0db4c7d198/DIN%202014%20P.ttf");
+}
+
+* {
+    font-family: DIN, Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    padding-top: 8rem;
+}
+
+@keyframes flashRed {
+    0% {
+        color: red;
+    }
+    100% {
+        color: initial;
+    }
+}
+
+.flashRedEffect {
+    animation: flashRed 0.1s forwards;
+}
+
+h1 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    width: 100%;
+    height: 6rem;
+    padding-top: 0.8em;
+    background-color: lightgreen;
+    z-index: 1000;
+}
+#cover {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    font-size: 8rem;
+    z-index: 999;
+    display: none;
+    background-color: whitesmoke;
+}
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    60% {
+        opacity: 1;
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.25s forwards;
+}
+
+@keyframes fadeOut {
+    40% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+.fade-out {
+    animation: fadeOut 0.25s forwards;
+}
+
+#display {
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+}
+
+#timeDiv {
+    display: none;
+    margin-top: 1rem;
+    align-items: center;
+    justify-content: center;
+}
+#timeBar {
+    height: 1.5rem;
+    width: 80%;
+    max-width: 600px;
+    margin-right: 1em;
+}
+progress {
+    border-radius: 0;
+    -webkit-appearance: none;
+    background-color: #ddd;
+}
+::-webkit-progress-bar {
+    background-color: #ddd;
+}
+::-webkit-progress-value {
+    background-color: #1e90ff;
+}
+
+#startButton {
+    font-size: 1.2rem;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.plain-text {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.parsed-text {
+    font-size: 1.5rem;
+    color: gray;
+}
+
+.roman-text {
+    font-size: 1.5rem;
+}
+
+.parsed-text .correct {
+    color: limegreen;
+}
+
+.roman-text .correct {
+    color: green;
+    font-weight: bold;
+}
+
+.choice {
+    width: 90%;
+    max-width: 800px;
+    margin: 1rem auto;
+    display: flex;
+    border: 1px solid black;
+}
+
+div {
+    position: relative;
+    flex: 1;
+}
+
+input {
+    width: 100%;
+    height: 60px;
+    opacity: 0;
+}
+
+label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.choice label {
+    font-weight: bold;
+}
+.choice div:nth-child(1) input:checked + label {
+    background-color: #66dd11;
+    color: whie;
+}
+
+.choice div:nth-child(2) input:checked + label {
+    background-color: #33bbed;
+    color: white;
+}
+.choice div:nth-child(3) input:checked + label {
+    background-color: #ffaa01;
+}
+.choice div:nth-child(4) input:checked + label {
+    background-color: #ed4566;
+    color: white;
+}
+.choice div:nth-child(n + 5) input:checked + label {
+    background-color: #bb33ef;
+    color: white;
+}
