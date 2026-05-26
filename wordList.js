@@ -1,6 +1,15 @@
 const targetStrings = {
     alan: [
+        // simple values for debugging
         {
+            plain: "ああああああああああああ",
+            parsed: "ああああああああああああ"
+        },
+        {
+            plain: "いいいいいいいいいいいいい",
+            parsed: "いいいいいいいいいいいいい"
+        }
+        /*{
             plain: "アランナラはアランラカラリをやりながら南から来た。",
             parsed: "あらんならはあらんらからりをやりながらみなみからきた",
         },
@@ -31,7 +40,7 @@ const targetStrings = {
         {
             plain: "ヴァナンラナへ行ってアランマという名のアランナラに会った…",
             parsed: "ヴぁなんらなへいってあらんまというなのあらんならにあった",
-        },
+        },*/
     ],
     general: [
         {

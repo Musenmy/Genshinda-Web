@@ -1,20 +1,47 @@
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => document.querySelectorAll(s);
 
+const realtimeResults = {
+    elapsedTime: {
+        name: "時間",
+        value: 0,
+        unit: "秒",
+    },
+    obtainedPoints: {
+        name: "獲得ポイント",
+        value: 0,
+        unit: "pt",
+    },
+    clearedWords: {
+        name: "完答単語数",
+        value: 0,
+        unit: "語",
+    },
+    okTypesCount: {
+        name: "正しいタイプ数",
+        value: 0,
+        unit: "回",
+    },
+    ngTypesCount: {
+        name: "ミスタイプ数",
+        value: 0,
+        unit: "回",
+    },
+    typesPerSec: {
+        name: "平均タイピング速度",
+        value: "0.00",
+        unit: "回/秒",
+    },
+};
+
 let typingText;
 let currentTarget;
-let correctCount = 0;
-let mistypeCount = 0;
-let clearedWords = 0;
-let obtainedPoints = 0;
 let timeLimit;
-let remainingTime;
 let pressedKeys = new Set();
 let isPlaying = false;
 let timerInterval;
 let loadNextWordTimeout;
 let usedIndexes = [];
-const body = document.body;
 const choices = $$(".choice");
 const display = $("#display");
 const timeDiv = $("#timeDiv");
@@ -29,8 +56,10 @@ let currentIndexForSortedMode = 0;
 function getRandomTargetString() {
     if (usedIndexes.length === reducedTargetStrings.length) usedIndexes = [];
     let index;
-    do index = Math.floor(Math.random() * reducedTargetStrings.length);
-    while (usedIndexes.includes(index));
+    // prevent appearing same string until all strings have been used
+    do {
+        index = Math.floor(Math.random() * reducedTargetStrings.length);
+    } while (usedIndexes.includes(index));
     usedIndexes.push(index);
     return reducedTargetStrings[index];
 }
@@ -73,7 +102,7 @@ function startGame() {
     const [minLen, maxLen] = lvRanges[levelChoiceValue];
     if (timeChoiceValue == 5) {
         gameMode = "sorted";
-        timeLimit = 114514;
+        timeLimit = null;
     } else {
         gameMode = "timed";
         timeLimit = timeLimits[timeChoiceValue];
@@ -87,29 +116,35 @@ function startGame() {
         alert("文字数絞り込みの結果がありませんでした。絞り込みなしで続けます。");
     }
     isPlaying = true;
-    correctCount = 0;
-    mistypeCount = 0;
-    clearedWords = 0;
-    obtainedPoints = 0;
+    Object.values(realtimeResults).forEach((i) => (i.value = 0)); // init results
     currentIndexForSortedMode = 0;
-    remainingTime = timeLimit;
-    timeBar.max = timeLimit;
-    timeDisplay.textContent = `残り${remainingTime}`;
-    timeBar.value = remainingTime;
+
+    if (gameMode == "timed") {
+        timeDisplay.textContent = `残り${timeLimit}`;
+        timeBar.max = timeLimit;
+        timeBar.value = timeLimit;
+    } else {
+        timeDisplay.textContent = `経過時間 0`;
+        timeBar.max = 0;
+        timeBar.value = 0;
+    }
+    // hide start button
     startButton.style.display = "none";
     choices.forEach((e) => (e.style.display = "none"));
+    // show timer and first word
     timeDiv.style.display = "flex";
     setupNewTarget();
+    // start time limit countdown
     timerInterval = setInterval(() => {
-        remainingTime--;
+        realtimeResults.elapsedTime.value++;
         if (gameMode == "timed") {
-            timeDisplay.textContent = `残り${remainingTime}`;
-            timeBar.value = remainingTime;
+            timeDisplay.textContent = `残り${timeLimit - realtimeResults.elapsedTime.value}`;
+            timeBar.value = timeLimit - realtimeResults.elapsedTime.value;
+            if (timeLimit - realtimeResults.elapsedTime.value <= 0) endGame();
         } else {
-            timeDisplay.textContent = `経過時間 ${114514 - remainingTime}`;
-            timeBar.value = 114514 - remainingTime;
+            timeDisplay.textContent = `経過時間 ${realtimeResults.elapsedTime.value}`;
+            timeBar.value = realtimeResults.elapsedTime.value;
         }
-        if (remainingTime <= 0) endGame();
     }, 1000);
 }
 
@@ -118,27 +153,25 @@ function endGame() {
     isPlaying = false;
     clearInterval(timerInterval);
     if (gameMode == "timed") {
-        const adjustedTime = timeLimit - clearedWords * 0.5;
-        let speed = (correctCount / adjustedTime).toFixed(2);
-        display.innerHTML = `
-<h3>制限時間終了！</h3>
-<p>得点: ${obtainedPoints}pt</p>
-<p>完答単語数: ${clearedWords}語</p>
-<p>正しいタイプ数: ${correctCount}回</p>
-<p>ミスタイプ数: ${mistypeCount}回</p>
-<p>平均タイピング速度: ${speed} 回/秒</p>`;
+        const adjustedTime = timeLimit - realtimeResults.clearedWords.value * 0.5;
+        realtimeResults.typesPerSec.value = (realtimeResults.okTypesCount.value / adjustedTime).toFixed(2);
+        display.innerHTML = `<h3>制限時間終了！</h3>`;
+        Object.values(realtimeResults).forEach((result) => {
+            const p = document.createElement("p");
+            p.innerHTML = `${result.name}: ${result.value}${result.unit}`;
+            display.appendChild(p);
+        });
     } else {
-        let clearTime = 114514 - remainingTime;
-        const adjustedTime = clearTime - clearedWords * 0.5;
-        let speed = (correctCount / adjustedTime).toFixed(2);
-        display.innerHTML = `
-<h3>ゲーム終了！</h3>
-<p>クリア時間: ${clearTime}秒</p>
-<p>正しいタイプ数: ${correctCount}回</p>
-<p>ミスタイプ数: ${mistypeCount}回</p>
-<p>平均タイピング速度: ${speed} 回/秒</p>`;
+        let clearTime = realtimeResults.elapsedTime.value;
+        const adjustedTime = clearTime - realtimeResults.clearedWords.value * 0.5;
+        realtimeResults.typesPerSec.value = (realtimeResults.okTypesCount.value / adjustedTime).toFixed(2);
+        display.innerHTML = `<h3>ゲーム終了！</h3>`;
+        Object.values(realtimeResults).forEach((result) => {
+            const p = document.createElement("p");
+            p.innerHTML = `${result.name}: ${result.value}${result.unit}`;
+            display.appendChild(p);
+        });
     }
-    // Hide any visible cover (e.g. the "n語目" overlay) so results are visible
     if (cover) {
         cover.style.display = "none";
         cover.classList.remove("fade-in", "fade-out");
@@ -153,16 +186,16 @@ document.addEventListener("keydown", (event) => {
     pressedKeys.add(event.key);
     const result = typingText.inputKey(event.key);
     if (result === "unmatch") {
-        mistypeCount++;
+        realtimeResults.ngTypesCount.value++;
     } else {
-        correctCount++;
+        realtimeResults.okTypesCount.value++;
         if (result === "complete") {
-            obtainedPoints += (Math.floor(typingText.text.length / 5) + 1) * 50;
-            clearedWords++;
+            realtimeResults.obtainedPoints.value += (Math.floor(typingText.text.length / 5) + 1) * 50;
+            realtimeResults.clearedWords.value++;
             if (gameMode == "timed") {
-                cover.innerHTML = `<p>${clearedWords + 1}語目</p>`;
+                cover.innerHTML = `<p>${realtimeResults.clearedWords.value + 1}語目</p>`;
             } else {
-                cover.innerHTML = `${clearedWords + 1}/${reducedTargetStrings.length}語目`;
+                cover.innerHTML = `${realtimeResults.clearedWords.value + 1}語目 / ${reducedTargetStrings.length}語`;
                 if (currentIndexForSortedMode == reducedTargetStrings.length) {
                     return endGame();
                 }
